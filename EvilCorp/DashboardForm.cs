@@ -1,3 +1,5 @@
+using System;
+
 namespace EvilCorp
 {
     public partial class DashboardForm : Form
@@ -21,7 +23,7 @@ namespace EvilCorp
 
         private void btnAttack_Click(object sender, EventArgs e)
         {
-            using (var attack = new AttackForm(_currentUser))
+            using (var attack = new AttackForm())
             {
                 attack.ShowDialog();
             }
@@ -29,10 +31,7 @@ namespace EvilCorp
 
         private void btnProfile_Click(object sender, EventArgs e)
         {
-            using (var pf = new ProfileForm(_currentUser))
-            {
-                pf.ShowDialog();
-            }
+            MessageBox.Show($"User: {_currentUser.Username}\nId: {_currentUser.Id}", "Profile");
         }
 
         private void btnCrypto_Click(object sender, EventArgs e)
