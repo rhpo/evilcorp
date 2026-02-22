@@ -1,0 +1,45 @@
+# .gitignore for C# / .NET projects
+
+# Build folders
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / IDE
+.idea/
+.vscode/
+
+# Logs and databases
+*.log
+*.db
+evilcorp.db
+credentials.txt
+
+# Debug / build outputs
+*.pdb
+*.dll
+*.exe
+*.cache
+
+# NuGet
+*.nupkg
+packages/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Publish
+publish/
+
+# Resharper
+_ReSharper*/
+
+# Misc
+*.localhistory
