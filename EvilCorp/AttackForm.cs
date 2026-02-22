@@ -1,62 +1,194 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
 namespace EvilCorp
 {
     public partial class AttackForm : Form
     {
-        private User _currentUser;
+        private List<User> _users = new();
 
-        public AttackForm(User user)
+        public AttackForm()
         {
             InitializeComponent();
-            _currentUser = user;
 
-            LoadTargets();
-            cmbAttackType.Items.AddRange(new object[] { "Brute Force", "Dictionary", "Man-in-the-Middle" });
-            cmbAttackType.SelectedIndex = 0;
-        }
+            _users = DatabaseManager.GetAllUsers();
 
-        private void LoadTargets()
-        {
-            var users = DatabaseManager.GetAllUsers().Where(u => u.Id != _currentUser.Id).ToList();
-            foreach (var u in users)
+            cmbTargetUser.DisplayMember = "Username";
+            cmbTargetUser.ValueMember = "Id";
+            cmbTargetUser.DataSource = _users;
+
+            cmbAttackType.Items.AddRange(new object[]
             {
-                cmbTargetUser.Items.Add(new UserItem { User = u });
-            }
-            if (cmbTargetUser.Items.Count > 0)
-                cmbTargetUser.SelectedIndex = 0;
+                "Brute Force",
+                "Dictionary"
+            });
+
+            cmbAttackType.SelectedIndex = 0;
         }
 
         private async void btnStart_Click(object sender, EventArgs e)
         {
-            if (cmbTargetUser.SelectedItem == null)
-                return;
-
-            string attackType = cmbAttackType.SelectedItem?.ToString() ?? "Brute Force";
-            var target = ((UserItem)cmbTargetUser.SelectedItem).User;
-
-            if (attackType != "Brute Force")
+            if (cmbTargetUser.SelectedItem is not User selectedUser)
             {
-                MessageBox.Show("Only a safe simulation is provided for non-destructive testing. Real attack implementations are disabled.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Select a target user.");
                 return;
             }
 
-            // Simulated brute-force: do NOT attempt to retrieve real passwords. This is an ethics-safe simulation only.
+            string targetPassword = GetPasswordFromDb(selectedUser.Id);
+
+            if (string.IsNullOrEmpty(targetPassword))
+            {
+                MessageBox.Show("No password found for this user.");
+                return;
+            }
+
             progress.Value = 0;
-            lblStatus.Text = "Simulating brute-force...";
 
-            for (int i = 0; i <= 100; i += 5)
-            {
-                progress.Value = i;
-                await Task.Delay(80);
-            }
-
-            lblStatus.Text = "Simulation complete. Real attack disabled for safety.";
-            MessageBox.Show("Brute-force simulation finished. This build does not perform real attacks or reveal credentials.", "Simulation Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (cmbAttackType.SelectedItem?.ToString() == "Dictionary")
+                await RunDictionaryAttack(targetPassword);
+            else
+                await RunBruteForce(targetPassword);
         }
 
-        private class UserItem
+        private string GetPasswordFromDb(int userId)
         {
-            public User User { get; set; } = null!;
-            public override string ToString() => User.Username;
+            using (var connection = new System.Data.SQLite.SQLiteConnection("Data Source=evilcorp.db;Version=3;"))
+            {
+                connection.Open();
+                string query = "SELECT PasswordHash FROM Users WHERE Id = @id";
+
+                using (var cmd = new System.Data.SQLite.SQLiteCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@id", userId);
+                    var result = cmd.ExecuteScalar();
+                    return result?.ToString() ?? string.Empty;
+                }
+            }
+        }
+
+        // =========================
+        // DICTIONARY ATTACK 
+        // =========================
+        private async Task RunDictionaryAttack(string targetPassword)
+        {
+            lblStatus.Text = "Running dictionary attack...";
+
+            string[] dictionary =
+            {
+                "234",
+                "54321",
+                "password",
+                "admin",
+                "azerty",
+                "test",
+                "hello"
+            };
+
+            int attempts = 0;
+            Stopwatch sw = Stopwatch.StartNew();
+
+            foreach (var word in dictionary)
+            {
+
+                attempts++;
+
+                progress.Value = attempts * 100 / dictionary.Length;
+                await Task.Delay(50);
+
+
+                if (word.Equals(targetPassword, StringComparison.Ordinal))
+                {
+                    sw.Stop();
+
+                    MessageBox.Show(
+                        $"Password found: {word}\nAttempts: {attempts}\nTime: {sw.ElapsedMilliseconds} ms",
+                        "Dictionary Success");
+
+                    lblStatus.Text = "Dictionary attack success.";
+                    return;
+                }
+            }
+
+            sw.Stop();
+            MessageBox.Show(
+                $"Password not found.\nAttempts: {attempts}\nTime: {sw.ElapsedMilliseconds} ms",
+                "Dictionary Failed");
+
+            lblStatus.Text = "Dictionary attack failed.";
+        }
+
+        // =========================
+        // BRUTE FORCE
+        // =========================
+        private async Task RunBruteForce(string targetPassword)
+        {
+            lblStatus.Text = "Running brute force...";
+
+            string charset = "1234";
+            int maxLength = 3;
+
+            int attempts = 0;
+            Stopwatch sw = Stopwatch.StartNew();
+
+            foreach (var candidate in GenerateCombinations(charset, maxLength))
+            {
+                attempts++;
+                MessageBox.Show($"{candidate}-{targetPassword}");
+                if (candidate.Equals(targetPassword, StringComparison.Ordinal))
+                {
+                    sw.Stop();
+
+                    MessageBox.Show(
+                        $"Password found: {candidate}\nAttempts: {attempts}\nTime: {sw.ElapsedMilliseconds} ms",
+                        "Brute Force Success");
+
+                    lblStatus.Text = "Brute force success.";
+                    return;
+                }
+
+                if (attempts % 10 == 0)
+                {
+                    progress.Value = Math.Min(100, attempts / 2);
+                    await Task.Delay(1);
+                }
+            }
+
+            sw.Stop();
+            MessageBox.Show(
+                $"Password not found.\nAttempts: {attempts}\nTime: {sw.ElapsedMilliseconds} ms",
+                "Brute Force Failed");
+
+            lblStatus.Text = "Brute force failed.";
+        }
+
+        // =========================
+        // COMBINATION GENERATOR
+        // =========================
+        private static IEnumerable<string> GenerateCombinations(string charset, int maxLength)
+        {
+            for (int length = 1; length <= maxLength; length++)
+            {
+                foreach (var result in Generate(charset, "", length))
+                    yield return result;
+            }
+        }
+
+        private static IEnumerable<string> Generate(string charset, string prefix, int remaining)
+        {
+            if (remaining == 0)
+            {
+                yield return prefix;
+                yield break;
+            }
+
+            foreach (char c in charset)
+            {
+                foreach (var result in Generate(charset, prefix + c, remaining - 1))
+                    yield return result;
+            }
         }
     }
 }
