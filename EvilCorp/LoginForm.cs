@@ -44,5 +44,17 @@ namespace EvilCorp
         {
             btnLogin.BackColor = System.Drawing.Color.FromArgb(50, 100, 200);
         }
+
+        private void btnTogglePassword_Click(object sender, EventArgs e)
+        {
+            if (txtPassword.PasswordChar == '\0' || txtPassword.PasswordChar == '\0')
+            {
+                txtPassword.PasswordChar = '●';
+            }
+            else
+            {
+                txtPassword.PasswordChar = '\0';
+            }
+        }
     }
 }
