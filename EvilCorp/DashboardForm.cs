@@ -29,7 +29,10 @@ namespace EvilCorp
 
         private void btnProfile_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"User: {_currentUser.Username}\nId: {_currentUser.Id}", "Profile");
+            using (var pf = new ProfileForm(_currentUser))
+            {
+                pf.ShowDialog();
+            }
         }
 
         private void btnCrypto_Click(object sender, EventArgs e)
