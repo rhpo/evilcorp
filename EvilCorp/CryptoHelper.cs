@@ -4,6 +4,17 @@ namespace EvilCorp
 {
     public static class CryptoHelper
     {
+        private static int GCD(int a, int b)
+        {
+            while (b != 0)
+            {
+                int temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return Math.Abs(a);
+        }
+
         public static string CaesarHash(string input, int key)
         {
             StringBuilder result = new StringBuilder();
@@ -34,42 +45,57 @@ namespace EvilCorp
 
         public static string AffineEncrypt(string input, int a, int b)
         {
+            if (GCD(a, 26) != 1)
+                throw new ArgumentException("Invalid key: 'a' must be coprime with 26.");
+
             StringBuilder result = new StringBuilder();
+
             foreach (char c in input)
             {
                 if (char.IsLetter(c))
                 {
                     char offset = char.IsUpper(c) ? 'A' : 'a';
                     int x = c - offset;
-                    result.Append((char)(((a * x + b) % 26) + offset));
+
+                    int encrypted = ((a * x + b) % 26 + 26) % 26;
+                    result.Append((char)(encrypted + offset));
                 }
                 else
                 {
                     result.Append(c);
                 }
             }
+
             return result.ToString();
         }
 
         public static string AffineDecrypt(string input, int a, int b)
         {
+            if (GCD(a, 26) != 1)
+                throw new ArgumentException("Invalid key: 'a' must be coprime with 26.");
+
             int aInv = ModInverse(a, 26);
-            if (aInv == -1) return input;
+            if (aInv == -1)
+                throw new ArgumentException("Modular inverse does not exist for this key.");
 
             StringBuilder result = new StringBuilder();
+
             foreach (char c in input)
             {
                 if (char.IsLetter(c))
                 {
                     char offset = char.IsUpper(c) ? 'A' : 'a';
                     int y = c - offset;
-                    result.Append((char)(((aInv * (y - b + 26)) % 26) + offset));
+
+                    int decrypted = ((aInv * (y - b)) % 26 + 26) % 26;
+                    result.Append((char)(decrypted + offset));
                 }
                 else
                 {
                     result.Append(c);
                 }
             }
+
             return result.ToString();
         }
 
