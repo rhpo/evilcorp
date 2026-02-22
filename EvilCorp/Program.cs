@@ -13,7 +13,7 @@ namespace EvilCorp
             {
                 if (loginForm.ShowDialog() == DialogResult.OK && loginForm.AuthenticatedUser != null)
                 {
-                    Application.Run(new ChatForm(loginForm.AuthenticatedUser));
+                    Application.Run(new DashboardForm(loginForm.AuthenticatedUser));
                 }
             }
         }
