@@ -81,8 +81,24 @@ namespace EvilCorp
             this.txtPassword.Location = new System.Drawing.Point(50, 215);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '●';
-            this.txtPassword.Size = new System.Drawing.Size(300, 25);
+            this.txtPassword.Size = new System.Drawing.Size(260, 25);
             this.txtPassword.TabIndex = 4;
+            //
+            // btnTogglePassword
+            //
+            this.btnTogglePassword = new System.Windows.Forms.Button();
+            this.btnTogglePassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTogglePassword.FlatAppearance.BorderSize = 0;
+            this.btnTogglePassword.BackColor = System.Drawing.Color.Transparent;
+            this.btnTogglePassword.Font = new System.Drawing.Font("Inter", 9F);
+            this.btnTogglePassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(200)))), ((int)(((byte)(230)))));
+            this.btnTogglePassword.Location = new System.Drawing.Point(320, 215);
+            this.btnTogglePassword.Name = "btnTogglePassword";
+            this.btnTogglePassword.Size = new System.Drawing.Size(30, 25);
+            this.btnTogglePassword.TabIndex = 8;
+            this.btnTogglePassword.Text = "👁";
+            this.btnTogglePassword.UseVisualStyleBackColor = true;
+            this.btnTogglePassword.Click += new System.EventHandler(this.btnTogglePassword_Click);
             //
             // btnLogin
             //
@@ -120,6 +136,7 @@ namespace EvilCorp
             this.panelMain.Controls.Add(this.btnLogin);
             this.panelMain.Controls.Add(this.txtUsername);
             this.panelMain.Controls.Add(this.txtPassword);
+            this.panelMain.Controls.Add(this.btnTogglePassword);
             this.panelMain.Controls.Add(this.lblPassword);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
@@ -153,5 +170,6 @@ namespace EvilCorp
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Label lblError;
         private System.Windows.Forms.Panel panelMain;
+        private System.Windows.Forms.Button btnTogglePassword;
     }
 }
