@@ -1,0 +1,29 @@
+# .gitignore for the EvilCorp project folder
+
+# Build outputs
+bin/
+obj/
+
+# Visual Studio files (safety)
+.vs/
+*.user
+*.suo
+
+# Local DB and credentials
+evilcorp.db
+credentials.txt
+
+# Designer and generated
+*.Designer.cs
+*.resx
+
+# Logs
+*.log
+
+# Other
+*.pdb
+*.cache
+
+# IDE folders
+.vscode/
+.idea/
