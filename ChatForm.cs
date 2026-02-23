@@ -87,14 +87,17 @@ namespace EvilCorp
                 var messageData = JsonSerializer.Deserialize<MessageData>(message);
                 if (messageData != null)
                 {
-                    string decryptedContent = DecryptMessage(messageData.Content, messageData.Algorithm, messageData.Key);
+                    // Use the bundled content to extract algorithm and key
+                    var (actualContent, algorithm, key) = CryptoHelper.UnbundleMessage(messageData.Content);
+
+                    string decryptedContent = DecryptMessage(actualContent, algorithm, key);
                     string senderName = GetUserNameById(messageData.SenderId);
 
-                    DatabaseManager.SaveMessage(messageData.SenderId, _currentUser.Id, messageData.Content, messageData.Algorithm, messageData.Key);
+                    // Save with the extracted info
+                    DatabaseManager.SaveMessage(messageData.SenderId, _currentUser.Id, actualContent, algorithm, key);
 
                     AppendMessage($"[{DateTime.Now:HH:mm:ss}] {senderName} → You\n");
-                    AppendMessage($"  Encrypted: {messageData.Content}\n", System.Drawing.Color.FromArgb(150, 170, 200));
-                    AppendMessage($"  Key: {messageData.Key} | Algorithm: {messageData.Algorithm}\n", System.Drawing.Color.FromArgb(120, 140, 180));
+                    AppendMessage($"  Encrypted (Bundled): {messageData.Content}\n", System.Drawing.Color.FromArgb(150, 170, 200));
                     AppendMessage($"  Decrypted: {decryptedContent}\n\n", System.Drawing.Color.FromArgb(100, 200, 150));
                 }
             }
@@ -126,6 +129,7 @@ namespace EvilCorp
             }
 
             string encryptedContent = EncryptMessage(txtMessage.Text, algorithm, key);
+            string bundledContent = CryptoHelper.BundleMessage(encryptedContent, algorithm, key);
             var receiver = ((UserItem)cmbReceiver.SelectedItem).User;
 
             DatabaseManager.SaveMessage(_currentUser.Id, receiver.Id, encryptedContent, algorithm, key);
@@ -134,9 +138,9 @@ namespace EvilCorp
             {
                 SenderId = _currentUser.Id,
                 ReceiverId = receiver.Id,
-                Content = encryptedContent,
-                Algorithm = algorithm,
-                Key = key
+                Content = bundledContent,
+                Algorithm = "Hidden", // No longer sending clear metadata
+                Key = "Hidden"
             };
 
             string json = JsonSerializer.Serialize(messageData);
@@ -144,7 +148,7 @@ namespace EvilCorp
 
             AppendMessage($"[{DateTime.Now:HH:mm:ss}] You → {receiver.Username}\n");
             AppendMessage($"  Original: {txtMessage.Text}\n", System.Drawing.Color.FromArgb(200, 220, 255));
-            AppendMessage($"  Encrypted: {encryptedContent}\n", System.Drawing.Color.FromArgb(150, 170, 200));
+            AppendMessage($"  Encrypted (Bundled): {bundledContent}\n", System.Drawing.Color.FromArgb(150, 170, 200));
             AppendMessage($"  Key: {key} | Algorithm: {algorithm}\n\n", System.Drawing.Color.FromArgb(120, 140, 180));
 
             txtMessage.Clear();

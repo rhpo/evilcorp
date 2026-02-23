@@ -1,4 +1,5 @@
 using System.Text;
+using System.Linq;
 
 namespace EvilCorp
 {
@@ -219,6 +220,93 @@ namespace EvilCorp
             }
 
             return inv;
+        }
+
+        /// <summary>
+        /// Bundles the encrypted content, algorithm, and key into a single string
+        /// by injecting metadata characters into the content.
+        /// </summary>
+        public static string BundleMessage(string content, string algorithm, string key)
+        {
+            // 1. Pack metadata into a single string with an internal separator
+            string metadata = $"{algorithm}|{key}";
+            string header = metadata.Length.ToString("D3"); // 3-digit length header
+
+            // 2. Interleave metadata and content: meta at even, content at odd positions
+            StringBuilder bundled = new StringBuilder(header);
+            int metaIdx = 0;
+            int contentIdx = 0;
+
+            // Total length of the payload (excluding header)
+            int total = metadata.Length + content.Length;
+
+            for (int i = 0; i < total; i++)
+            {
+                // We alternate until one is exhausted, then fill the rest with the other
+                bool isMetaTurn = (i % 2 == 0) && (metaIdx < metadata.Length);
+
+                // Special case: if content is exhausted, everything else must be meta
+                if (contentIdx >= content.Length) isMetaTurn = true;
+                // Special case: if meta is exhausted, everything else must be content
+                if (metaIdx >= metadata.Length) isMetaTurn = false;
+
+                if (isMetaTurn)
+                {
+                    bundled.Append(metadata[metaIdx++]);
+                }
+                else
+                {
+                    bundled.Append(content[contentIdx++]);
+                }
+            }
+
+            return bundled.ToString();
+        }
+
+        public static (string content, string algorithm, string key) UnbundleMessage(string bundled)
+        {
+            if (bundled.Length < 3) return (bundled, "Caesar", "3");
+
+            // Extract the 3-digit metadata length
+            if (!int.TryParse(bundled.Substring(0, 3), out int metaLen))
+                return (bundled, "Caesar", "3");
+
+            string payload = bundled.Substring(3);
+            StringBuilder metaBuilder = new StringBuilder();
+            StringBuilder contentBuilder = new StringBuilder();
+
+            int metaCharsFound = 0;
+            int contentCharsFound = 0;
+            int expectedContentLen = payload.Length - metaLen;
+
+            for (int i = 0; i < payload.Length; i++)
+            {
+                bool isMetaTurn = (i % 2 == 0) && (metaCharsFound < metaLen);
+
+                // Adjust turns if one sequence is complete
+                if (contentCharsFound >= expectedContentLen) isMetaTurn = true;
+                if (metaCharsFound >= metaLen) isMetaTurn = false;
+
+                if (isMetaTurn)
+                {
+                    metaBuilder.Append(payload[i]);
+                    metaCharsFound++;
+                }
+                else
+                {
+                    contentBuilder.Append(payload[i]);
+                    contentCharsFound++;
+                }
+            }
+
+            string metadata = metaBuilder.ToString();
+            var parts = metadata.Split('|');
+            if (parts.Length >= 2)
+            {
+                return (contentBuilder.ToString(), parts[0], parts[1]);
+            }
+
+            return (contentBuilder.ToString(), "Caesar", "3");
         }
     }
 }

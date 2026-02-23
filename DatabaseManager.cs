@@ -1,6 +1,7 @@
 using System.Data.SQLite;
 using System.Security.Cryptography;
 using System.Text;
+using System.Collections.Generic;
 
 namespace EvilCorp
 {
@@ -50,6 +51,51 @@ namespace EvilCorp
                 }
 
                 SeedUsers(connection);
+                MigratePasswordsToClearText(connection);
+            }
+        }
+
+        private static void MigratePasswordsToClearText(SQLiteConnection connection)
+        {
+            // Check if we still have any Caesar-encrypted passwords.
+            // This is a bit tricky to detect perfectly, but we can try to "decrypt" them
+            // and see if they match a known pattern or just do it once.
+            // For simplicity, we'll assume if they contain characters that look like they
+            // haven't been migrated yet, or just perform a migration check.
+
+            // Actually, we can just check if "mehdi" has password 'nop' (ROT13 of 'abc')
+            string checkQuery = "SELECT PasswordHash FROM Users WHERE Username = 'mehdi'";
+            using (var cmd = new SQLiteCommand(checkQuery, connection))
+            {
+                var result = cmd.ExecuteScalar()?.ToString();
+                if (result == "nop") // 'abc' shifted by 13 in the 27-char alphabet
+                {
+                    // Migration needed
+                    string getAllQuery = "SELECT Id, PasswordHash FROM Users";
+                    var updates = new List<(int Id, string ClearPassword)>();
+                    using (var readerCmd = new SQLiteCommand(getAllQuery, connection))
+                    using (var reader = readerCmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string encrypted = reader.GetString(1);
+                            string decrypted = CryptoHelper.CaesarHash(encrypted, -13);
+                            updates.Add((id, decrypted));
+                        }
+                    }
+
+                    foreach (var update in updates)
+                    {
+                        string updateQuery = "UPDATE Users SET PasswordHash = @pass WHERE Id = @id";
+                        using (var updateCmd = new SQLiteCommand(updateQuery, connection))
+                        {
+                            updateCmd.Parameters.AddWithValue("@pass", update.ClearPassword);
+                            updateCmd.Parameters.AddWithValue("@id", update.Id);
+                            updateCmd.ExecuteNonQuery();
+                        }
+                    }
+                }
             }
         }
 
@@ -57,9 +103,9 @@ namespace EvilCorp
         {
             var users = new[]
             {
-                new { Username = "mehdi", Password = "abc" },
-                new { Username = "anis", Password = "hello" },
-                new { Username = "ramy", Password = "test" }
+                new { Username = "mehdi", Password = "234" },
+                new { Username = "anis", Password = "54321" },
+                new { Username = "ramy", Password = "#esst#" }
             };
 
             foreach (var user in users)
@@ -72,7 +118,7 @@ namespace EvilCorp
 
                     if (count == 0)
                     {
-                        string hashedPassword = CryptoHelper.CaesarHash(user.Password, 13);
+                        string hashedPassword = user.Password;
                         string insertQuery = "INSERT INTO Users (Username, PasswordHash) VALUES (@username, @password)";
                         using (var insertCmd = new SQLiteCommand(insertQuery, connection))
                         {
@@ -102,7 +148,7 @@ namespace EvilCorp
         }
         public static string DecryptPasswordFromDb(string password)
         {
-            return CryptoHelper.CaesarHash(password, -13);
+            return password;
         }
 
         public static User? AuthenticateUser(string username, string password)
@@ -110,7 +156,7 @@ namespace EvilCorp
             using (var connection = new SQLiteConnection(ConnectionString))
             {
                 connection.Open();
-                string hashedPassword = CryptoHelper.CaesarHash(password, 13);
+                string hashedPassword = password;
 
                 string query = "SELECT Id, Username FROM Users WHERE Username = @username AND PasswordHash = @password";
                 using (var command = new SQLiteCommand(query, connection))
