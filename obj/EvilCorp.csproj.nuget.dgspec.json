@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mehdi\\Downloads\\evilcorp-main\\EvilCorp.csproj": {}
+    "C:\\Users\\ramyh\\Desktop\\evilcorp-main\\EvilCorp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mehdi\\Downloads\\evilcorp-main\\EvilCorp.csproj": {
+    "C:\\Users\\ramyh\\Desktop\\evilcorp-main\\EvilCorp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mehdi\\Downloads\\evilcorp-main\\EvilCorp.csproj",
+        "projectUniqueName": "C:\\Users\\ramyh\\Desktop\\evilcorp-main\\EvilCorp.csproj",
         "projectName": "EvilCorp",
-        "projectPath": "C:\\Users\\mehdi\\Downloads\\evilcorp-main\\EvilCorp.csproj",
-        "packagesPath": "C:\\Users\\mehdi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mehdi\\Downloads\\evilcorp-main\\obj\\",
+        "projectPath": "C:\\Users\\ramyh\\Desktop\\evilcorp-main\\EvilCorp.csproj",
+        "packagesPath": "C:\\Users\\ramyh\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ramyh\\Desktop\\evilcorp-main\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\mehdi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ramyh\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -40,7 +41,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0-windows7.0": {
@@ -62,24 +63,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.24, 8.0.24]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
@@ -88,7 +71,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

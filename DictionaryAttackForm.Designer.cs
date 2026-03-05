@@ -17,163 +17,171 @@ namespace EvilCorp
 
         private void InitializeComponent()
         {
-            this.lblTarget = new System.Windows.Forms.Label();
-            this.cmbTargetUser = new System.Windows.Forms.ComboBox();
-            this.lblDictionary = new System.Windows.Forms.Label();
-            this.txtDictionary = new System.Windows.Forms.TextBox();
-            this.lblMinLength = new System.Windows.Forms.Label();
-            this.numMinLength = new System.Windows.Forms.NumericUpDown();
-            this.lblMaxLength = new System.Windows.Forms.Label();
-            this.numMaxLength = new System.Windows.Forms.NumericUpDown();
-            this.btnStart = new System.Windows.Forms.Button();
-            this.progress = new System.Windows.Forms.ProgressBar();
-            this.lblStatus = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.numMinLength)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaxLength)).BeginInit();
-            this.SuspendLayout();
-            //
+            lblTarget = new Label();
+            cmbTargetUser = new ComboBox();
+            lblDictionary = new Label();
+            txtDictionary = new TextBox();
+            lblMinLength = new Label();
+            numMinLength = new NumericUpDown();
+            lblMaxLength = new Label();
+            numMaxLength = new NumericUpDown();
+            btnStart = new Button();
+            progress = new ProgressBar();
+            lblStatus = new Label();
+            ((System.ComponentModel.ISupportInitialize)numMinLength).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numMaxLength).BeginInit();
+            SuspendLayout();
+            // 
             // lblTarget
-            //
-            this.lblTarget.AutoSize = true;
-            this.lblTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(200)))), ((int)(((byte)(230)))));
-            this.lblTarget.Location = new System.Drawing.Point(20, 20);
-            this.lblTarget.Name = "lblTarget";
-            this.lblTarget.Size = new System.Drawing.Size(65, 15);
-            this.lblTarget.TabIndex = 0;
-            this.lblTarget.Text = "Target User";
-            //
+            // 
+            lblTarget.AutoSize = true;
+            lblTarget.ForeColor = Color.FromArgb(180, 200, 230);
+            lblTarget.Location = new Point(23, 27);
+            lblTarget.Name = "lblTarget";
+            lblTarget.Size = new Size(83, 20);
+            lblTarget.TabIndex = 0;
+            lblTarget.Text = "Target User";
+            // 
             // cmbTargetUser
-            //
-            this.cmbTargetUser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(40)))), ((int)(((byte)(60)))));
-            this.cmbTargetUser.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTargetUser.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmbTargetUser.ForeColor = System.Drawing.Color.White;
-            this.cmbTargetUser.Location = new System.Drawing.Point(20, 40);
-            this.cmbTargetUser.Name = "cmbTargetUser";
-            this.cmbTargetUser.Size = new System.Drawing.Size(300, 23);
-            this.cmbTargetUser.TabIndex = 1;
-            //
+            // 
+            cmbTargetUser.BackColor = Color.FromArgb(30, 40, 60);
+            cmbTargetUser.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTargetUser.FlatStyle = FlatStyle.Flat;
+            cmbTargetUser.ForeColor = Color.White;
+            cmbTargetUser.Location = new Point(23, 53);
+            cmbTargetUser.Margin = new Padding(3, 4, 3, 4);
+            cmbTargetUser.Name = "cmbTargetUser";
+            cmbTargetUser.Size = new Size(342, 28);
+            cmbTargetUser.TabIndex = 1;
+            cmbTargetUser.SelectedIndexChanged += cmbTargetUser_SelectedIndexChanged;
+            // 
             // lblDictionary
-            //
-            this.lblDictionary.AutoSize = true;
-            this.lblDictionary.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(200)))), ((int)(((byte)(230)))));
-            this.lblDictionary.Location = new System.Drawing.Point(20, 80);
-            this.lblDictionary.Name = "lblDictionary";
-            this.lblDictionary.Size = new System.Drawing.Size(125, 15);
-            this.lblDictionary.TabIndex = 2;
-            this.lblDictionary.Text = "Dictionary (one per line)";
-            //
+            // 
+            lblDictionary.AutoSize = true;
+            lblDictionary.ForeColor = Color.FromArgb(180, 200, 230);
+            lblDictionary.Location = new Point(23, 107);
+            lblDictionary.Name = "lblDictionary";
+            lblDictionary.Size = new Size(170, 20);
+            lblDictionary.TabIndex = 2;
+            lblDictionary.Text = "Dictionary (one per line)";
+            // 
             // txtDictionary
-            //
-            this.txtDictionary.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(40)))), ((int)(((byte)(60)))));
-            this.txtDictionary.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtDictionary.ForeColor = System.Drawing.Color.White;
-            this.txtDictionary.Location = new System.Drawing.Point(20, 100);
-            this.txtDictionary.Multiline = true;
-            this.txtDictionary.Name = "txtDictionary";
-            this.txtDictionary.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDictionary.Size = new System.Drawing.Size(300, 150);
-            this.txtDictionary.TabIndex = 3;
-            this.txtDictionary.Text = "password\r\nadmin\r\n123456\r\nqwerty\r\nhello\r\nwelcome";
-            //
+            // 
+            txtDictionary.BackColor = Color.FromArgb(30, 40, 60);
+            txtDictionary.BorderStyle = BorderStyle.FixedSingle;
+            txtDictionary.ForeColor = Color.White;
+            txtDictionary.Location = new Point(23, 133);
+            txtDictionary.Margin = new Padding(3, 4, 3, 4);
+            txtDictionary.Multiline = true;
+            txtDictionary.Name = "txtDictionary";
+            txtDictionary.ScrollBars = ScrollBars.Vertical;
+            txtDictionary.Size = new Size(343, 199);
+            txtDictionary.TabIndex = 3;
+            // 
             // lblMinLength
-            //
-            this.lblMinLength.AutoSize = true;
-            this.lblMinLength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(200)))), ((int)(((byte)(230)))));
-            this.lblMinLength.Location = new System.Drawing.Point(20, 265);
-            this.lblMinLength.Name = "lblMinLength";
-            this.lblMinLength.Size = new System.Drawing.Size(69, 15);
-            this.lblMinLength.TabIndex = 4;
-            this.lblMinLength.Text = "Min Length";
-            //
+            // 
+            lblMinLength.AutoSize = true;
+            lblMinLength.ForeColor = Color.FromArgb(180, 200, 230);
+            lblMinLength.Location = new Point(23, 353);
+            lblMinLength.Name = "lblMinLength";
+            lblMinLength.Size = new Size(83, 20);
+            lblMinLength.TabIndex = 4;
+            lblMinLength.Text = "Min Length";
+            // 
             // numMinLength
-            //
-            this.numMinLength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(40)))), ((int)(((byte)(60)))));
-            this.numMinLength.ForeColor = System.Drawing.Color.White;
-            this.numMinLength.Location = new System.Drawing.Point(20, 285);
-            this.numMinLength.Name = "numMinLength";
-            this.numMinLength.Size = new System.Drawing.Size(140, 23);
-            this.numMinLength.TabIndex = 5;
-            this.numMinLength.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            //
+            // 
+            numMinLength.BackColor = Color.FromArgb(30, 40, 60);
+            numMinLength.ForeColor = Color.White;
+            numMinLength.Location = new Point(23, 380);
+            numMinLength.Margin = new Padding(3, 4, 3, 4);
+            numMinLength.Name = "numMinLength";
+            numMinLength.Size = new Size(160, 27);
+            numMinLength.TabIndex = 5;
+            numMinLength.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
             // lblMaxLength
-            //
-            this.lblMaxLength.AutoSize = true;
-            this.lblMaxLength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(200)))), ((int)(((byte)(230)))));
-            this.lblMaxLength.Location = new System.Drawing.Point(180, 265);
-            this.lblMaxLength.Name = "lblMaxLength";
-            this.lblMaxLength.Size = new System.Drawing.Size(71, 15);
-            this.lblMaxLength.TabIndex = 6;
-            this.lblMaxLength.Text = "Max Length";
-            //
+            // 
+            lblMaxLength.AutoSize = true;
+            lblMaxLength.ForeColor = Color.FromArgb(180, 200, 230);
+            lblMaxLength.Location = new Point(206, 353);
+            lblMaxLength.Name = "lblMaxLength";
+            lblMaxLength.Size = new Size(86, 20);
+            lblMaxLength.TabIndex = 6;
+            lblMaxLength.Text = "Max Length";
+            // 
             // numMaxLength
-            //
-            this.numMaxLength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(40)))), ((int)(((byte)(60)))));
-            this.numMaxLength.ForeColor = System.Drawing.Color.White;
-            this.numMaxLength.Location = new System.Drawing.Point(180, 285);
-            this.numMaxLength.Name = "numMaxLength";
-            this.numMaxLength.Size = new System.Drawing.Size(140, 23);
-            this.numMaxLength.TabIndex = 7;
-            this.numMaxLength.Value = new decimal(new int[] { 20, 0, 0, 0 });
-            //
+            // 
+            numMaxLength.BackColor = Color.FromArgb(30, 40, 60);
+            numMaxLength.ForeColor = Color.White;
+            numMaxLength.Location = new Point(206, 380);
+            numMaxLength.Margin = new Padding(3, 4, 3, 4);
+            numMaxLength.Name = "numMaxLength";
+            numMaxLength.Size = new Size(160, 27);
+            numMaxLength.TabIndex = 7;
+            numMaxLength.Value = new decimal(new int[] { 20, 0, 0, 0 });
+            // 
             // btnStart
-            //
-            this.btnStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(150)))), ((int)(((byte)(90)))));
-            this.btnStart.FlatAppearance.BorderSize = 0;
-            this.btnStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStart.Font = new System.Drawing.Font("Inter", 10F, System.Drawing.FontStyle.Bold);
-            this.btnStart.ForeColor = System.Drawing.Color.White;
-            this.btnStart.Location = new System.Drawing.Point(20, 330);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(300, 40);
-            this.btnStart.TabIndex = 8;
-            this.btnStart.Text = "START DICTIONARY ATTACK";
-            this.btnStart.UseVisualStyleBackColor = false;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            //
+            // 
+            btnStart.BackColor = Color.FromArgb(40, 150, 90);
+            btnStart.FlatAppearance.BorderSize = 0;
+            btnStart.FlatStyle = FlatStyle.Flat;
+            btnStart.Font = new Font("Inter", 10F, FontStyle.Bold);
+            btnStart.ForeColor = Color.White;
+            btnStart.Location = new Point(23, 440);
+            btnStart.Margin = new Padding(3, 4, 3, 4);
+            btnStart.Name = "btnStart";
+            btnStart.Size = new Size(343, 53);
+            btnStart.TabIndex = 8;
+            btnStart.Text = "START DICTIONARY ATTACK";
+            btnStart.UseVisualStyleBackColor = false;
+            btnStart.Click += btnStart_Click;
+            // 
             // progress
-            //
-            this.progress.Location = new System.Drawing.Point(20, 385);
-            this.progress.Name = "progress";
-            this.progress.Size = new System.Drawing.Size(300, 20);
-            this.progress.TabIndex = 9;
-            //
+            // 
+            progress.Location = new Point(23, 513);
+            progress.Margin = new Padding(3, 4, 3, 4);
+            progress.Name = "progress";
+            progress.Size = new Size(343, 27);
+            progress.TabIndex = 9;
+            // 
             // lblStatus
-            //
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(200)))), ((int)(((byte)(230)))));
-            this.lblStatus.Location = new System.Drawing.Point(20, 415);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(39, 15);
-            this.lblStatus.TabIndex = 10;
-            this.lblStatus.Text = "Ready";
-            //
+            // 
+            lblStatus.AutoSize = true;
+            lblStatus.ForeColor = Color.FromArgb(180, 200, 230);
+            lblStatus.Location = new Point(23, 553);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(50, 20);
+            lblStatus.TabIndex = 10;
+            lblStatus.Text = "Ready";
+            // 
             // DictionaryAttackForm
-            //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(35)))), ((int)(((byte)(55)))));
-            this.ClientSize = new System.Drawing.Size(340, 450);
-            this.Controls.Add(this.lblStatus);
-            this.Controls.Add(this.progress);
-            this.Controls.Add(this.btnStart);
-            this.Controls.Add(this.numMaxLength);
-            this.Controls.Add(this.lblMaxLength);
-            this.Controls.Add(this.numMinLength);
-            this.Controls.Add(this.lblMinLength);
-            this.Controls.Add(this.txtDictionary);
-            this.Controls.Add(this.lblDictionary);
-            this.Controls.Add(this.cmbTargetUser);
-            this.Controls.Add(this.lblTarget);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.Name = "DictionaryAttackForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Dictionary Attack";
-            ((System.ComponentModel.ISupportInitialize)(this.numMinLength)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaxLength)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(25, 35, 55);
+            ClientSize = new Size(389, 600);
+            Controls.Add(lblStatus);
+            Controls.Add(progress);
+            Controls.Add(btnStart);
+            Controls.Add(numMaxLength);
+            Controls.Add(lblMaxLength);
+            Controls.Add(numMinLength);
+            Controls.Add(lblMinLength);
+            Controls.Add(txtDictionary);
+            Controls.Add(lblDictionary);
+            Controls.Add(cmbTargetUser);
+            Controls.Add(lblTarget);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Margin = new Padding(3, 4, 3, 4);
+            MaximizeBox = false;
+            Name = "DictionaryAttackForm";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Dictionary Attack";
+            Load += DictionaryAttackForm_Load;
+            ((System.ComponentModel.ISupportInitialize)numMinLength).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numMaxLength).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

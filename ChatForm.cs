@@ -5,13 +5,11 @@ namespace EvilCorp
     public partial class ChatForm : Form
     {
         private User _currentUser;
-        private string _pipeName;
 
         public ChatForm(User user)
         {
             InitializeComponent();
             _currentUser = user;
-            _pipeName = $"EvilCorp_{_currentUser.Id}";
 
             InitializeForm();
             LoadUsers();
@@ -40,6 +38,7 @@ namespace EvilCorp
                     cmbReceiver.Items.Add(new UserItem { User = user });
                 }
             }
+
             if (cmbReceiver.Items.Count > 0)
                 cmbReceiver.SelectedIndex = 0;
         }
@@ -71,7 +70,7 @@ namespace EvilCorp
         private void StartCommunicationChannel()
         {
             CommunicationChannel.MessageReceived += OnMessageReceived;
-            CommunicationChannel.StartServer(_pipeName);
+            CommunicationChannel.StartServer(_currentUser.Id);
         }
 
         private void OnMessageReceived(string message)
@@ -139,12 +138,10 @@ namespace EvilCorp
                 SenderId = _currentUser.Id,
                 ReceiverId = receiver.Id,
                 Content = bundledContent,
-                Algorithm = "Hidden", // No longer sending clear metadata
-                Key = "Hidden"
             };
 
             string json = JsonSerializer.Serialize(messageData);
-            CommunicationChannel.SendMessage($"EvilCorp_{receiver.Id}", json);
+            CommunicationChannel.SendMessage(receiver.Id, json);
 
             AppendMessage($"[{DateTime.Now:HH:mm:ss}] You → {receiver.Username}\n");
             AppendMessage($"  Original: {txtMessage.Text}\n", System.Drawing.Color.FromArgb(200, 220, 255));
@@ -314,8 +311,8 @@ namespace EvilCorp
             public int SenderId { get; set; }
             public int ReceiverId { get; set; }
             public string Content { get; set; } = string.Empty;
-            public string Algorithm { get; set; } = string.Empty;
-            public string Key { get; set; } = string.Empty;
+            public string? Algorithm { get; set; } = string.Empty;
+            public string? Key { get; set; } = string.Empty;
         }
     }
 }

@@ -95,15 +95,10 @@ namespace EvilCorp
             {
                 attempts++;
 
-                MessageBox.Show($"Testing: {word}\nTarget: {targetPassword}");
-
                 progress.Value = attempts * 100 / filteredDictionary.Count;
 
                 lblStatus.Text = $"Testing: {word}...";
 
-                // Faster delay for dictionary search
-                if (attempts % 10 == 0)
-                    await Task.Delay(1);
 
                 if (word.Equals(targetPassword, StringComparison.Ordinal))
                 {
@@ -111,7 +106,7 @@ namespace EvilCorp
                     lblStatus.Text = "Success!";
                     progress.Value = 100;
                     MessageBox.Show(
-                        $"Password found: {word}\nAttempts: {attempts}\nTime: {sw.ElapsedMilliseconds} ms",
+                        $"Password found: {word}\nAttempts: {attempts}\nTime: {sw.Elapsed.TotalNanoseconds} nanoseconds\n{sw.ElapsedMilliseconds} en ms",
                         "Dictionary Success");
                     return;
                 }
@@ -120,8 +115,55 @@ namespace EvilCorp
             sw.Stop();
             lblStatus.Text = "Failed.";
             MessageBox.Show(
-                $"Password not found.\nAttempts: {attempts}\nTime: {sw.ElapsedMilliseconds} ms",
+                $"Password not found.\nAttempts: {attempts}\nTime: {sw.Elapsed.TotalNanoseconds} nanoseconds\n{sw.ElapsedMilliseconds} en ms",
                 "Dictionary Failed");
+        }
+
+        private void DictionaryAttackForm_Load(object sender, EventArgs e)
+        {
+
+
+        }
+
+        public static string GenerateDictionary(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+
+            int length = input.Length;
+            char[] charset = input.ToCharArray();
+
+            var result = new System.Text.StringBuilder();
+
+            void Generate(string current)
+            {
+                if (current.Length == length)
+                {
+                    result.AppendLine(current);
+                    return;
+                }
+
+                foreach (char c in charset)
+                {
+                    Generate(current + c);
+                }
+            }
+
+            Generate("");
+            return result.ToString();
+        }
+
+        private void cmbTargetUser_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbTargetUser.SelectedItem is not User selectedUser)
+            {
+                MessageBox.Show("Select a target user.");
+                return;
+            }
+
+            string targetPassword = DatabaseManager.GetPasswordFromDb(selectedUser.Id);
+
+            txtDictionary.Text = GenerateDictionary(targetPassword);
         }
     }
 }

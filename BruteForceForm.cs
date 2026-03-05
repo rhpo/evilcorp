@@ -90,7 +90,7 @@ namespace EvilCorp
                     progress.Value = 100;
 
                     MessageBox.Show(
-                        $"Password found: {candidate}\nAttempts: {attempts}\nTime: {sw.ElapsedMilliseconds} ms",
+                        $"Password found: {candidate}\nAttempts: {attempts}\nTime: {sw.Elapsed.TotalNanoseconds} nanoseconds\n{sw.ElapsedMilliseconds} en ms",
                         "Brute Force Success");
                     return;
                 }
@@ -100,14 +100,13 @@ namespace EvilCorp
                     lblStatus.Text = $"Testing: {candidate}...";
                     // Just a dummy progress update
                     progress.Value = (attempts / 100) % 101;
-                    await Task.Delay(1);
                 }
             }
 
             sw.Stop();
             lblStatus.Text = "Failed.";
             MessageBox.Show(
-                $"Password not found.\nAttempts: {attempts}\nTime: {sw.ElapsedMilliseconds} ms",
+                $"Password not found.\nAttempts: {attempts}\nTime: {sw.Elapsed.TotalNanoseconds} nanoseconds\n{sw.ElapsedMilliseconds} en ms",
                 "Brute Force Failed");
         }
 
