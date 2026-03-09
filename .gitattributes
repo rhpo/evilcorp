@@ -1,0 +1,19 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Force CRLF for typical Windows text files used in this repo
+*.cs text eol=crlf
+*.sln text eol=crlf
+*.csproj text eol=crlf
+*.resx text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.exe binary
+*.dll binary
+
+# Ensure Markdown uses LF (for cross-platform diff cleanliness)
+*.md text eol=lf

@@ -1,0 +1,27 @@
+# Build outputs
+bin/
+obj/
+
+# Local database and credentials
+*.db
+credentials.txt
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Logs and caches
+*.log
+*.cache
+
+# Binaries
+*.exe
+*.dll
+*.pdb
+
+# OS files
+.DS_Store
+Thumbs.db

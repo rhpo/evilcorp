@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StegnoForce | Stéganographie d'Image</title>
+    <style>
+        :root {
+            --primary: #2d7ef7;
+            --primary-hover: #1b63cc;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --accent: #00ff7f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(45, 126, 247, 0.4);
+        }
+
+        .preview-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .preview-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .preview-box h4 {
+            margin: 0 0 10px 0;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        img,
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        .bit-viewer {
+            margin-top: 15px;
+            background: #000;
+            color: var(--accent);
+            font-family: 'Cascadia Code', monospace;
+            padding: 10px;
+            border-radius: 6px;
+            height: 100px;
+            overflow-y: auto;
+            font-size: 11px;
+            text-align: left;
+            border: 1px solid rgba(0, 255, 127, 0.2);
+        }
+
+        @media (max-width: 900px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-container">
+        <a href="interface0.html" style="float: right; color: var(--primary); text-decoration: none;">&larr; Retour au
+            Dashboard</a>
+        <h2>StegnoForce LSB</h2>
+
+        <div class="tool-grid">
+            <!-- PANEL: HIDE -->
+            <div class="panel">
+                <h3>Encacher un secret</h3>
+                <div class="input-group">
+                    <label>Image Porteuse (Cover)</label>
+                    <input type="file" id="coverIn" accept="image/*">
+                </div>
+                <div class="input-group">
+                    <label>Image Secrète (Hidden)</label>
+                    <input type="file" id="secretIn" accept="image/*">
+                </div>
+                <div class="input-group">
+                    <label>Masque Binaire (Ex: 11111100 pour 2 bits)</label>
+                    <input type="text" id="maskHide" value="11111100">
+                </div>
+                <button onclick="processHide()">Fusionner les Images</button>
+
+                <div class="preview-area">
+                    <div class="preview-box">
+                        <h4>Cover</h4>
+                        <img id="imgCover">
+                    </div>
+                    <div class="preview-box">
+                        <h4>Composite</h4>
+                        <img id="imgComposite">
+                        <button onclick="downloadComposite()"
+                            style="font-size: 10px; padding: 5px; margin-top: 5px;">Télécharger</button>
+                    </div>
+                </div>
+                <div id="hideBits" class="bit-viewer">Prêt...</div>
+            </div>
+
+            <!-- PANEL: EXTRACT -->
+            <div class="panel">
+                <h3>Extraire un secret</h3>
+                <div class="input-group">
+                    <label>Charger une Image Composite</label>
+                    <input type="file" id="targetIn" accept="image/*">
+                </div>
+                <div class="input-group">
+                    <label>Masque Binaire utilisé (Ex: 11111100)</label>
+                    <input type="text" id="maskExtract" value="11111100">
+                </div>
+                <button onclick="processExtract()">Décoder le Secret</button>
+
+                <div class="preview-area">
+                    <div class="preview-box" style="grid-column: span 2;">
+                        <h4>Image Extraite</h4>
+                        <canvas id="canvasExtract"></canvas>
+                    </div>
+                </div>
+                <div id="extractBits" class="bit-viewer">En attente de fichier...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Log helpers
+        function logBits(elementId, imageData) {
+            const el = document.getElementById(elementId);
+            let log = "";
+            for (let i = 0; i < Math.min(imageData.data.length, 100); i += 4) {
+                const r = imageData.data[i].toString(2).padStart(8, '0');
+                const g = imageData.data[i + 1].toString(2).padStart(8, '0');
+                const b = imageData.data[i + 2].toString(2).padStart(8, '0');
+                log += `Pixel ${i / 4 + 1}: R:${r} G:${g} B:${b}\n`;
+            }
+            el.innerText = log || "Pas de données";
+        }
+
+        // Processing Mask logic
+        function getMaskInfo(maskStr) {
+            const mask = parseInt(maskStr, 2);
+            const numZeros = maskStr.split('0').length - 1;
+            const shift = 8 - numZeros;
+            const extractMask = 0xFF >> shift;
+            return { mask, shift, extractMask };
+        }
+
+        async function processHide() {
+            const coverFile = document.getElementById('coverIn').files[0];
+            const secretFile = document.getElementById('secretIn').files[0];
+            const maskStr = document.getElementById('maskHide').value;
+
+            if (!coverFile || !secretFile) return alert("Sélectionnez les deux images !");
+
+            const { mask, shift, extractMask } = getMaskInfo(maskStr);
+
+            const imgC = await loadImage(coverFile);
+            const imgS = await loadImage(secretFile);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = imgC.width;
+            canvas.height = imgC.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(imgC, 0, 0);
+
+            const hiddenCanvas = document.createElement('canvas');
+            hiddenCanvas.width = imgC.width;
+            hiddenCanvas.height = imgC.height;
+            const hCtx = hiddenCanvas.getContext('2d');
+            hCtx.drawImage(imgS, 0, 0, imgC.width, imgC.height);
+
+            const cData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const sData = hCtx.getImageData(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < cData.data.length; i += 4) {
+                for (let j = 0; j < 3; j++) { // R, G, B
+                    cData.data[i + j] = (cData.data[i + j] & mask) | (sData.data[i + j] >> shift);
+                }
+            }
+
+            ctx.putImageData(cData, 0, 0);
+            document.getElementById('imgCover').src = imgC.src;
+            document.getElementById('imgComposite').src = canvas.toDataURL();
+            logBits('hideBits', cData);
+        }
+
+        async function processExtract() {
+            const targetFile = document.getElementById('targetIn').files[0];
+            const maskStr = document.getElementById('maskExtract').value;
+
+            if (!targetFile) return alert("Sélectionnez l'image à analyser !");
+
+            const { mask, shift, extractMask } = getMaskInfo(maskStr);
+
+            const img = await loadImage(targetFile);
+            const canvas = document.getElementById('canvasExtract');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < data.data.length; i += 4) {
+                for (let j = 0; j < 3; j++) {
+                    // Reverse the process: extract bits and shift them back to MSB
+                    data.data[i + j] = (data.data[i + j] & extractMask) << shift;
+                }
+                data.data[i + 3] = 255; // Alpha
+            }
+
+            ctx.putImageData(data, 0, 0);
+            logBits('extractBits', data);
+        }
+
+        function loadImage(file) {
+            return new Promise(res => {
+                const r = new FileReader();
+                r.onload = e => {
+                    const img = new Image();
+                    img.onload = () => res(img);
+                    img.src = e.target.result;
+                };
+                r.readAsDataURL(file);
+            });
+        }
+
+        function downloadComposite() {
+            const data = document.getElementById('imgComposite').src;
+            if (!data) return;
+            const a = document.createElement('a');
+            a.href = data;
+            a.download = "encoded_secret.png";
+            a.click();
+        }
+    </script>
+</body>
+
+</html>
